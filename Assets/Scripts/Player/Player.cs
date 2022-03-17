@@ -38,7 +38,7 @@ public class Player : MonoBehaviour, IDamageable, IControllable
         charCtrl = GetComponent<CharacterController>();
         FindInputManager();
         pInputManager.BindVector2("Horizontal", "Vertical", new CommandPlayerMove(charCtrl, speed));
-        inventory = gameObject.AddComponent<Inventory>();
+        inventory = GetComponent<Inventory>();
         IEquipable[] weapons = GetComponentsInChildren<IEquipable>(true);
         inventory.AddItems(weapons);
     }

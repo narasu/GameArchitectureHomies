@@ -13,29 +13,40 @@ public class Inventory : MonoBehaviour, IControllable
     {
         set
         {
-            activeSlot = value;
-            fsm.SwitchState(activeSlot.state);
+            if (activeSlot != value)
+            {
+                activeSlot = value;
+                fsm.SwitchState(value.state);
+            }
         }
     }
 
     private InventorySlot activeSlot;
 
-    private List<InventorySlot> items = new List<InventorySlot>()
+    private List<InventorySlot> slots = new List<InventorySlot>()
     {
         new InventorySlot { item = null, state = typeof(InventorySlot1State) },
-        new InventorySlot { item = null, state = typeof(InventorySlot1State) }
+        new InventorySlot { item = null, state = typeof(InventorySlot2State) },
+        new InventorySlot { item = null, state = typeof(InventorySlot3State) }
     };
 
     private FiniteStateMachine<Inventory> fsm;
 
 
-    void Awake()
+    void Start()
     {
-        fsm = new FiniteStateMachine<Inventory>(this);
-        fsm.AddState(new InventorySlot1State(fsm));
+        FindInputManager();
 
-        pInputManager.BindKey(KeyCode.Alpha1, new CommandSwitchItem(this, items[0]));
-        pInputManager.BindKey(KeyCode.Alpha1, new CommandSwitchItem(this, items[1]));
+        fsm = new FiniteStateMachine<Inventory>(this);
+        fsm.AddState(new InventorySlot1State(fsm, slots[0]));
+        fsm.AddState(new InventorySlot2State(fsm, slots[1]));
+        fsm.AddState(new InventorySlot3State(fsm, slots[2]));
+
+        pInputManager.BindKey(KeyCode.Alpha1, new CommandSwitchItem(this, slots[0]));
+        pInputManager.BindKey(KeyCode.Alpha2, new CommandSwitchItem(this, slots[1]));
+        pInputManager.BindKey(KeyCode.Alpha3, new CommandSwitchItem(this, slots[2]));
+
+        pActiveSlot = slots[0];
     }
 
     private void Update()
@@ -45,24 +56,26 @@ public class Inventory : MonoBehaviour, IControllable
 
     public void AddItemToSlot(IEquipable _item, int _slot)
     {
-        if (items.Count <= _slot)
+        if (slots.Count <= _slot)
         {
             Debug.Log($"Slot {_slot} does not exist!");
             return;
         }
-        items[_slot].item = _item;
+        slots[_slot].item = _item;
     }
 
     public void AddItems(params IEquipable[] _items)
     {
         foreach (IEquipable i in _items)
         {
-            InventorySlot slot = items.Find(x => x.IsEmpty());
+            InventorySlot slot = slots.Find(x => x.IsEmpty());
+            Debug.Log(slot);
             if (slot == null)
             {
                 Debug.Log("No empty slots found!");
                 return;
             }
+            slot.item = i;
             //Debug.Log(slot.keyCode);
             //items.Add();
         }

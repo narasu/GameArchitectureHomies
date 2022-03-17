@@ -2,27 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventorySlot1State : AbstractState<Inventory>
+public class InventorySlot1State : InventorySlotState
 {
-    private FiniteStateMachine<Inventory> owner;
-
-    public InventorySlot1State(FiniteStateMachine<Inventory> _owner)
+    public InventorySlot1State(FiniteStateMachine<Inventory> _owner, InventorySlot _slot) : base(_owner, _slot)
     {
-        owner = _owner;
-    }
-
-    public override void OnEnter()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void OnExit()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void OnUpdate()
-    {
-        throw new System.NotImplementedException();
     }
 }
