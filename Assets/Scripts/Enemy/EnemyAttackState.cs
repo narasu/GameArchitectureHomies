@@ -19,7 +19,7 @@ public class EnemyAttackState : AbstractState<Enemy>
 
     public override void OnExit()
     {
-        throw new System.NotImplementedException();
+
     }
 
     public override void OnUpdate()

@@ -70,7 +70,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public void FixedUpdate()
     {
         CalculateDistanceToTarget(target);
-        //update the fsm update
+        enemyFSM.Update();
     }
 
     public void TakeDamage(float _damage, DamageType _damageType = DamageType.PHYSICAL)
@@ -103,7 +103,7 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             isInRange = false;
             BackToPath();
-            //enemyFSM.SwitchState(typeof(EnemyIdleState));
+            enemyFSM.SwitchState(typeof(EnemyIdleState));
         }
     }
 
