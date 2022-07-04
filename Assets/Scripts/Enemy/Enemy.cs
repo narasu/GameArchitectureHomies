@@ -32,7 +32,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public float movementSpeed;
     public Transform target;
     public float attackRadius = 30f;
-    private NavMeshAgent navMesh;
+    internal NavMeshAgent navMesh;
     [SerializeField] private Transform[] destinations;
    
     private int currentPoint;
@@ -109,13 +109,13 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void BackToPath()
     {
-        if(!isInRange && navMesh.remainingDistance < 8.5f)
+        if (!isInRange && navMesh.remainingDistance < 8.5f)
         {
             int i = currentPoint;
             Vector3 moveTo = Vector3.MoveTowards(transform.position, destinations[i].position, 100f);
             navMesh.destination = moveTo;
-            if(navMesh.remainingDistance < 1f)
-            { 
+            if (navMesh.remainingDistance < 1f)
+            {
                 UpdateCurrentpoint();
             }
         }

@@ -19,7 +19,7 @@ public class EnemyAttackState : AbstractState<Enemy>
 
     public override void OnExit()
     {
-
+        owner.pOwner.movementSpeed -= 10f;
     }
 
     public override void OnUpdate()
