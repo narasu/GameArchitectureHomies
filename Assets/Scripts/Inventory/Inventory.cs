@@ -92,13 +92,3 @@ public class Inventory : MonoBehaviour, IControllable
     }
 }
 
-public class InventorySlot
-{
-    public IEquipable item;
-    public System.Type state;
-
-    public bool IsEmpty()
-    {
-        return item == null;
-    }
-}

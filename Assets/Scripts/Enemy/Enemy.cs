@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    private FiniteStateMachine<Enemy> enemyFSM;
+    public FiniteStateMachine<Enemy> enemyFSM;
 
     [SerializeField] [Min(0f)] private float maxHealth;
     public HealthComponent Health
@@ -28,49 +29,56 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
+
     //properties for patrolling AI
     public float movementSpeed;
-    public Transform target;
     public float attackRadius = 30f;
+    public Transform target;
     internal NavMeshAgent navMesh;
-    [SerializeField] private Transform[] destinations;
+    [SerializeField] public Transform[] destinations;
    
-    private int currentPoint;
-    [SerializeField] private bool isInRange;
-    [SerializeField] private float timer;
-    [SerializeField] private float maxTime = 0f;
-
-    public Enemy()
-    {
-        enemyFSM = new FiniteStateMachine<Enemy>(this);
-        enemyFSM.AddState(new EnemyIdleState(enemyFSM));
-        enemyFSM.AddState(new EnemyAttackState(enemyFSM));
-
-
-        //enemyFSM.SwitchState(typeof(EnemyIdleState));
-    }
+    [SerializeField] internal bool isInRange;
+    [SerializeField] internal float timer;
+    [SerializeField] internal float maxTime = 0f;
 
     void Awake()
     {
+
+        navMesh = GetComponent<NavMeshAgent>();
+        enemyFSM = new FiniteStateMachine<Enemy>(this);
+        enemyFSM.AddState(new EnemyIdleState(enemyFSM, target));
+        enemyFSM.AddState(new EnemyAttackState(enemyFSM, target));
+
+
+        enemyFSM.SwitchState(typeof(EnemyIdleState));
+
         Health = new HealthComponent(maxHealth);
         resistances.Add(DamageType.PHYSICAL, 5f);
         resistances.Add(DamageType.FIRE, -5.0f);
+
+        //for(int i = 0; i < 5; i++)
+        //{
+        //    //GetComponent<GameObject>
+        //    GameObject destination;
+        //    destination = GameObject.FindGameObjectWithTag("patrolPoint");
+        //    destina
+        //}
+
     }
 
     void Start()
     {
-        navMesh = GetComponent<NavMeshAgent>();
+        enemyFSM.SwitchState(typeof(EnemyIdleState));
     }
 
     public void Update()
     {
-
+        Debug.Log("Update");
+        enemyFSM.Update();
     }
 
     public void FixedUpdate()
     {
-        CalculateDistanceToTarget(target);
-        enemyFSM.Update();
     }
 
     public void TakeDamage(float _damage, DamageType _damageType = DamageType.PHYSICAL)
@@ -80,56 +88,6 @@ public class Enemy : MonoBehaviour, IDamageable
         Debug.Log("Enemy now has " + Health.Value + " health");
     }
 
-    public void CalculateDistanceToTarget(Transform _target)
-    {
-        float distanceTo = Vector3.Distance(transform.position, _target.position);
-        if(distanceTo <= attackRadius)
-        {
-            timer += Time.deltaTime;
-            if(timer > maxTime)
-            {
+    
 
-                isInRange = true;
-                transform.LookAt(_target);
-                Vector3 moveTo = Vector3.MoveTowards(transform.position, _target.position, 100f);
-                navMesh.destination = moveTo;
-
-                //modulair?
-                //enemyFSM.SwitchState(typeof(EnemyAttackState));
-            }
-            
-        }
-        else if (distanceTo > attackRadius)
-        {
-            isInRange = false;
-            BackToPath();
-            enemyFSM.SwitchState(typeof(EnemyIdleState));
-        }
-    }
-
-    public void BackToPath()
-    {
-        if (!isInRange && navMesh.remainingDistance < 8.5f)
-        {
-            int i = currentPoint;
-            Vector3 moveTo = Vector3.MoveTowards(transform.position, destinations[i].position, 100f);
-            navMesh.destination = moveTo;
-            if (navMesh.remainingDistance < 1f)
-            {
-                UpdateCurrentpoint();
-            }
-        }
-    }
-
-    public void UpdateCurrentpoint()
-    {
-        if(currentPoint == destinations.Length - 1)
-        {
-            currentPoint = 0;
-        }
-        else
-        {
-             currentPoint++;
-        }
-    }
 }
