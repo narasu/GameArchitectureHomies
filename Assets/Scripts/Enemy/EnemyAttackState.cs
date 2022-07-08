@@ -13,10 +13,8 @@ public class EnemyAttackState : AbstractState<Enemy>
         target = _target;
     }
 
-    //Give reference to player target?
     public override void OnEnter()
     {
-        Debug.Log("enter attACK STATE");
         owner.pOwner.movementSpeed += 10f;
     }
 
@@ -45,7 +43,5 @@ public class EnemyAttackState : AbstractState<Enemy>
             
             owner.pOwner.enemyFSM.SwitchState(typeof(EnemyIdleState));
         }
-
-
     }
 }

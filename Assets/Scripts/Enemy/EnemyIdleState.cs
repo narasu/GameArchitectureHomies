@@ -7,7 +7,6 @@ public class EnemyIdleState : AbstractState<Enemy>
 {
     private FiniteStateMachine<Enemy> owner;
     private Transform target;
-    //private Transform[] destinations;
     private int currentPoint;
     public EnemyIdleState(FiniteStateMachine<Enemy> _owner, Transform _target)
     {
@@ -18,7 +17,6 @@ public class EnemyIdleState : AbstractState<Enemy>
     public override void OnEnter()
     {
         BackToPath();
-        Debug.Log("enter Idle State");
     }
 
     public override void OnExit()
@@ -28,14 +26,12 @@ public class EnemyIdleState : AbstractState<Enemy>
 
     public override void OnUpdate()
     {
-        CalculateDistance(target, owner.pOwner.destinations);
+        CalculateDistance(target);
     }
 
-    public void CalculateDistance(Transform _target, params Transform[] _destination)
+    public void CalculateDistance(Transform _target)
     {
-        Transform currentDestinationPoint = _destination[currentPoint];
         float distanceTo = Vector3.Distance(owner.pOwner.transform.position, _target.position);
-        float distanceToPoint = Vector3.Distance(owner.pOwner.transform.position, currentDestinationPoint.position);
         if (distanceTo <= owner.pOwner.attackRadius)
         {
             owner.pOwner.timer += Time.deltaTime;

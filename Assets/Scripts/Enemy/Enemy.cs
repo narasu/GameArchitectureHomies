@@ -49,21 +49,9 @@ public class Enemy : MonoBehaviour, IDamageable
         enemyFSM.AddState(new EnemyIdleState(enemyFSM, target));
         enemyFSM.AddState(new EnemyAttackState(enemyFSM, target));
 
-
-        enemyFSM.SwitchState(typeof(EnemyIdleState));
-
         Health = new HealthComponent(maxHealth);
         resistances.Add(DamageType.PHYSICAL, 5f);
         resistances.Add(DamageType.FIRE, -5.0f);
-
-        //for(int i = 0; i < 5; i++)
-        //{
-        //    //GetComponent<GameObject>
-        //    GameObject destination;
-        //    destination = GameObject.FindGameObjectWithTag("patrolPoint");
-        //    destina
-        //}
-
     }
 
     void Start()
@@ -73,7 +61,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Update()
     {
-        Debug.Log("Update");
         enemyFSM.Update();
     }
 
@@ -84,8 +71,6 @@ public class Enemy : MonoBehaviour, IDamageable
     public void TakeDamage(float _damage, DamageType _damageType = DamageType.PHYSICAL)
     {
         Health.Value -= _damage;
-        Debug.Log("Enemy took damage!");
-        Debug.Log("Enemy now has " + Health.Value + " health");
     }
 
     
